@@ -6,10 +6,14 @@ from keras.layers import Dense, LSTM
 from keras.models import Sequential
 from sklearn.preprocessing import MinMaxScaler
 from keras.layers import Dropout
-
+import pandas_datareader as web
 plt.style.use('fivethirtyeight')
-df = pd.read_csv('HINDUNILVR.NS.csv',index_col= 'Date')
-df.index = pd.to_datetime(df.index,dayfirst=True)
+
+
+df = web.DataReader('HINDUNILVR.NS', data_source='yahoo', start='2012-01-01', end='2020-05-03')
+
+#df = pd.read_csv('HINDUNILVR.NS.csv',index_col= 'Date')
+#df['Date'] = pd.to_datetime(df.index,dayfirst=True)
 #Data cleaning
 #Create a new dataframe with only the 'Close' column
 data = df.filter(['Close'])
@@ -88,3 +92,20 @@ plt.plot(valid[['Close', 'Predictions']])
 plt.legend(['Train', 'Val', 'Predictions'], loc='lower right')
 plt.show()
 
+
+last_60_days = data[-60:].values
+#Scale the data to be values between 0 and 1
+last_60_days_scaled = scaler.transform(last_60_days)
+#Create an empty list
+X_test = []
+#Append teh past 60 days
+X_test.append(last_60_days_scaled)
+#Convert the X_test data set to a numpy array
+X_test = np.array(X_test)
+#Reshape the data
+X_test = np.reshape(X_test, (X_test.shape[0], X_test.shape[1], 1))
+#Get the predicted scaled price
+pred_price = model.predict(X_test)
+#undo the scaling
+pred_price = scaler.inverse_transform(pred_price)
+print(pred_price)
