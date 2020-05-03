@@ -5,6 +5,7 @@ import pandas as pd
 from keras.layers import Dense, LSTM
 from keras.models import Sequential
 from sklearn.preprocessing import MinMaxScaler
+from keras.layers import Dropout
 
 plt.style.use('fivethirtyeight')
 df = pd.read_csv('HINDUNILVR.NS.csv',index_col= 'Date')
@@ -39,8 +40,11 @@ x_train = np.reshape(x_train, (x_train.shape[0],x_train.shape[1],1))
 #Build the LSTM network model
 model = Sequential()
 model.add(LSTM(units=50, return_sequences=True,input_shape=(x_train.shape[1],1)))
+model.add(Dropout(0.20))
 model.add(LSTM(units=50, return_sequences=False))
+model.add(Dropout(0.20))
 model.add(Dense(units=25))
+
 model.add(Dense(units=1))
 
 #Compile the model
@@ -68,7 +72,6 @@ x_test = np.reshape(x_test, (x_test.shape[0],x_test.shape[1],1))
 #Getting the models predicted price values
 predictions = model.predict(x_test)
 predictions = scaler.inverse_transform(predictions)#Undo scaling
-
 
 
 #Plot/Create the data for the graph
