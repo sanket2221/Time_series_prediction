@@ -19,7 +19,7 @@ def data():
 def home():
     return render_template('index.html')
 
-@app.route('/predict.py',methods=['POST'])
+@app.route('/predict',methods=['POST'])
 def predict():
     df = web.DataReader('BAJFINANCE.NS', data_source='yahoo', start='2012-01-01', end=date.today())
     model = load_model('model.h5')
