@@ -7,10 +7,14 @@ from keras.models import Sequential
 from sklearn.preprocessing import MinMaxScaler
 from keras.layers import Dropout
 import pandas_datareader as web
+from datetime import date
+from pandas.plotting import register_matplotlib_converters
+register_matplotlib_converters()
+
 plt.style.use('fivethirtyeight')
 
-
-df = web.DataReader('HINDUNILVR.NS', data_source='yahoo', start='2012-01-01', end='2020-05-03')
+print(date.today())
+df = web.DataReader('BAJFINANCE.NS', data_source='yahoo', start='2012-01-01', end=date.today())
 
 #df = pd.read_csv('HINDUNILVR.NS.csv',index_col= 'Date')
 #df['Date'] = pd.to_datetime(df.index,dayfirst=True)
@@ -57,6 +61,7 @@ model.compile(optimizer='adam', loss='mean_squared_error',metrics=['accuracy'])
 #Train the model
 model.fit(x_train, y_train, batch_size=32, epochs=100)
 
+model.save('model.h5')
 
 
 #Test data set
@@ -92,7 +97,7 @@ plt.plot(valid[['Close', 'Predictions']])
 plt.legend(['Train', 'Val', 'Predictions'], loc='lower right')
 plt.show()
 
-
+'''
 last_60_days = data[-60:].values
 #Scale the data to be values between 0 and 1
 last_60_days_scaled = scaler.transform(last_60_days)
@@ -105,7 +110,9 @@ X_test = np.array(X_test)
 #Reshape the data
 X_test = np.reshape(X_test, (X_test.shape[0], X_test.shape[1], 1))
 #Get the predicted scaled price
-pred_price = model.predict(X_test)
+pred_price = model.predict.py(X_test)
 #undo the scaling
 pred_price = scaler.inverse_transform(pred_price)
 print(pred_price)
+
+'''
